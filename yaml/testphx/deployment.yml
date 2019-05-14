@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testphoenix
+  labels:
+    app: testphx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: testphx
+  template:
+    metadata:
+      labels:
+        app: testphx
+    spec:
+      containers:
+      - name: testphx-cont
+        image: ramgop/testphx
+        ports:
+        - containerPort: 4000

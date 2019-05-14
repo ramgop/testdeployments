@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: testphx
+  name: testphoenix
+  namespace: default
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+  - port: 4000
+    protocol: TCP
+    targetPort: 4000
+  selector:
+    app: testphx
+  type: LoadBalancer

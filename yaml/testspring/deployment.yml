@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testspring
+  labels:
+    app: testspring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: testspring
+  template:
+    metadata:
+      labels:
+        app: testspring
+    spec:
+      containers:
+      - name: testspring-cont
+        image: ramgop/testspring
+        ports:
+        - containerPort: 8080
