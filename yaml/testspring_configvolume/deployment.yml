@@ -1,0 +1,46 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: testspringconfigvol
+  labels:
+    app: testspring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: testspringconfigvol
+  template:
+    metadata:
+      labels:
+        app: testspringconfigvol
+    spec:
+      initContainers:
+      # taken from https://gist.github.com/tallclair/849601a16cebeee581ef2be50c351841
+      # This container clones the desired git repo to the EmptyDir volume.
+      - name: git-config
+        image: alpine/git # Any image with git will do
+        args:
+          - clone
+          - --single-branch
+          - --
+          - https://github.com/ramgop/fakeconfig
+          - /repo # Put it in the volume
+        securityContext:
+          runAsUser: 1 # Any non-root user will do. Match to the workload.
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /repo
+          name: git-config
+      containers:
+      - name: testspringconfigvol-cont
+        image: ramgop/testspring
+        ports:
+        - containerPort: 8080
+        volumeMounts:  
+        - mountPath: /usr/local/lib/config/
+          name: git-config
+      volumes:
+        - name: git-config
+          emptyDir: {}

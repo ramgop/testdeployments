@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: testspringconfigmap
+  labels:
+    app: testspring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: testspringconfigmap
+  template:
+    metadata:
+      labels:
+        app: testspringconfigmap
+    spec:
+      containers:
+      - name: testspringconfigmap-cont
+        image: ramgop/testspring
+        ports:
+        - containerPort: 8080
+        volumeMounts:  
+        - mountPath: /usr/local/lib/config/
+          name: testspring-configmap-volume
+          readOnly: false
+      volumes:
+        - name: testspring-configmap-volume
+          configMap:
+            name: testspring-configmap
+            items: 
+              - key: config
+                path: application.yml
